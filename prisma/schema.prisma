@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model books {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title          String       @db.VarChar(255)
+  author         String       @db.VarChar(255)
+  published_year Int
+  stock          Int          @default(0)
+  isbn           String       @unique @db.VarChar(13)
+  created_at     DateTime?    @default(now()) @db.Timestamp(6)
+  updated_at     DateTime?    @default(now()) @db.Timestamp(6)
+  borrowings     borrowings[]
+}
+
+model borrowings {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  book_id     String?   @db.Uuid
+  member_id   String?   @db.Uuid
+  borrow_date DateTime  @db.Date
+  return_date DateTime? @db.Date
+  status      String    @default("BORROWED") @db.VarChar(10)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @default(now()) @db.Timestamp(6)
+  books       books?    @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  members     members?  @relation(fields: [member_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model members {
+  id         String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String       @db.VarChar(255)
+  email      String       @unique @db.VarChar(255)
+  phone      String       @db.VarChar(15)
+  address    String
+  created_at DateTime?    @default(now()) @db.Timestamp(6)
+  updated_at DateTime?    @default(now()) @db.Timestamp(6)
+  borrowings borrowings[]
+}
