@@ -25,8 +25,8 @@ Inisialisasi project Node.js:<br>
 -npx prisma init --db --output ../generated/prisma<br>
 
 Push schema ke database dan migrasi:<br>
+-npx prisma db pull<br>
 -npx prisma generate<br>
--npx prisma db push<br>
 -npx prisma migrate <br>
 
 c. Perintah untuk Menjalankan Proyek<br>
